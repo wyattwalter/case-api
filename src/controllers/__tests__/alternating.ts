@@ -21,9 +21,19 @@ describe('GET /alternating-caps', () => {
       })
   })
 
-  it('should return 400 if text query param is not able to be converted to a string', async done => {
+  it('should return 400 if no text query param is provided', async done => {
     request(server)
-      .get(`/api/v1/alternating-caps?text=1234`)
+      .get(`/api/v1/alternating-caps`)
+      .expect(400)
+      .end((err, res) => {
+        if (err) return done(err)
+        done()
+      })
+  })
+
+  it('should return 400 if and invalid query param is provided', async done => {
+    request(server)
+      .get(`/api/v1/alternating-caps?text=hi&thisapi=useless`)
       .expect(400)
       .end((err, res) => {
         if (err) return done(err)

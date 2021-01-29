@@ -727,6 +727,11 @@ ajv@^6.12.3, ajv@^6.12.6:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
+alternating-case@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/alternating-case/-/alternating-case-1.0.0.tgz#e975cbb525273427d3655dd02367b9731568d5f8"
+  integrity sha512-JQSGPK9Rfj8T+ZE/r6A5CWkpbwDAMlHRjUD0Du4em1H+gGmq1GZ+Og+57/i+oWxR/MyaFzKN/IeuCxpx2hBbPw==
+
 ansi-escapes@^4.2.1:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/ansi-escapes/-/ansi-escapes-4.3.1.tgz#a5c47cc43181f1f38ffd7076837700d395522a61"
