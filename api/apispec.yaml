@@ -1,0 +1,44 @@
+openapi: 3.0.3
+info:
+  title: String Case API
+  description: A silly API no one should use.
+  contact:
+    name: Wyatt Walter
+    url: https://github.com/wyattwalter/case-api
+  license:
+    name: GPLv3
+    url: https://www.gnu.org/licenses/gpl-3.0.en.html
+  version: 1.0.0
+servers:
+  - url: /api/v1
+
+paths:
+  /alternating-caps:
+    get:
+      description: returns string with aLtErNaTiNg CaPs
+      operationId: alternatingCaps
+      parameters:
+      - name: text
+        required: true
+        in: query
+        description: Text to return with alternating caps
+        schema:
+          type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseAPIResponse'
+
+components:
+  schemas:
+    CaseAPIResponse:
+      type: object
+      additionalProperties: true
+      required:
+        - text
+      properties:
+        string:
+          type: string
