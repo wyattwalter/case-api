@@ -5,6 +5,9 @@ workflows:
   node-tests:
     jobs:
       - test
+  build-image:
+    jobs:
+      - build-image
 jobs:
   test:
     executor:
@@ -20,3 +23,14 @@ jobs:
       - run:
           command: yarn run test
           name: Run test suite
+  build-image:
+    environment:
+      IMAGE_NAME: wyattwalter/case-api
+    docker:
+      - image: circleci/buildpack-deps:stretch
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: build image
+          command: docker build -t $IMAGE_NAME:latest .
