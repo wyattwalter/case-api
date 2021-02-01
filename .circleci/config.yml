@@ -12,6 +12,8 @@ workflows:
     context: GitHub Packages
     requires:
       - build-image
+    jobs:
+      - publish-image
 jobs:
   test:
     executor:
