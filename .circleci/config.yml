@@ -50,5 +50,5 @@ jobs:
       - run:
           name: publish docker image
           command: |
-            echo "${DOCKERHUB_TOKEN}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
+            echo "${DOCKER_TOKEN}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
             docker push $IMAGE_NAME:latest
