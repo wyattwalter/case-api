@@ -13,7 +13,8 @@ workflows:
       - build-image
     jobs:
       - publish-image
-          context: GitHub Packages
+          context:
+            - GitHub Packages
 jobs:
   test:
     executor:
