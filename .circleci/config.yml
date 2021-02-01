@@ -9,12 +9,11 @@ workflows:
     jobs:
       - test
   publish-image:
-    context:
-      - GitHub Packages
     requires:
       - build-image
     jobs:
       - publish-image
+          context: GitHub Packages
 jobs:
   test:
     executor:
