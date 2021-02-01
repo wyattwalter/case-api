@@ -2,11 +2,15 @@ version: 2.1
 orbs:
   node: circleci/node@3.0.0
 workflows:
+  build-image:
+    jobs:
+      - build-image
   node-tests:
     jobs:
       - test
-  build-image:
-    jobs:
+  publish-image:
+    context: GitHub Packages
+    requires:
       - build-image
 jobs:
   test:
@@ -25,7 +29,7 @@ jobs:
           name: Run test suite
   build-image:
     environment:
-      IMAGE_NAME: wyattwalter/case-api
+      IMAGE_NAME: docker.pkg.github.com/wyattwalter/case-api/case-api
     docker:
       - image: circleci/buildpack-deps:stretch
     steps:
@@ -35,3 +39,15 @@ jobs:
       - run:
           name: build image
           command: docker build -t $IMAGE_NAME:latest .
+  publish-image:
+    environment:
+      IMAGE_NAME: docker.pkg.github.com/wyattwalter/case-api/case-api
+    docker:
+      - image: circleci/buildpack-deps:stretch
+    steps:
+      - setup_remote_docker
+      - run:
+          name: publish docker image
+          command: |
+            echo "${GITHUB_TOKEN}" | docker login https://docker.pkg.github.com -u "${GITHUB_USERNAME}" --password-stdin
+            docker push $IMAGE_NAME:latest
