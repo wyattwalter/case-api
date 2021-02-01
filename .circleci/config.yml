@@ -50,6 +50,4 @@ jobs:
       - setup_remote_docker
       - run:
           name: publish docker image
-          command: |
-            echo "${GITHUB_TOKEN}" | docker login https://docker.pkg.github.com -u "${GITHUB_USERNAME}" --password-stdin
-            docker push $IMAGE_NAME:latest
+          command: echo "hi"
