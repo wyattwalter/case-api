@@ -5,7 +5,7 @@ workflows:
   build-image:
     jobs:
       - build-image
-      - publish-image
+      - publish-image:
           requires:
             - build-image
           context:
