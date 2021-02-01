@@ -1,4 +1,10 @@
 version: 2.1
+executors:
+  docker-publisher:
+    environment:
+      IMAGE_NAME: wyattwalter/case-api
+    docker:
+      - image: circleci/buildpack-deps:stretch
 orbs:
   node: circleci/node@3.0.0
 workflows:
@@ -29,10 +35,7 @@ jobs:
           command: yarn run test
           name: Run test suite
   build-image:
-    environment:
-      IMAGE_NAME: wyattwalter/case-api
-    docker:
-      - image: circleci/buildpack-deps:stretch
+    executor: docker-publisher
     steps:
       - checkout
       - setup_remote_docker:
@@ -40,13 +43,22 @@ jobs:
       - run:
           name: build image
           command: docker build -t $IMAGE_NAME:latest .
+      - run:
+          name: archive the Docker image
+          command: docker save -o image.tar $IMAGE_NAME
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./image.tar
   publish-image:
-    environment:
-      IMAGE_NAME: wyattwalter/case-api
-    docker:
-      - image: circleci/buildpack-deps:stretch
+    executor: docker-publisher
     steps:
+      - attach_workspace:
+          at: /tmp/workspace
       - setup_remote_docker
+      - run:
+          name: load archived Docker image
+          command: docker load -i /tmp/workspace/image.tar
       - run:
           name: publish docker image
           command: |
