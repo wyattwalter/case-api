@@ -10,7 +10,7 @@
     "build": "tsc",
     "start": "node dist/app.js",
     "dev": "ts-node src/app.ts",
-    "test": "jest",
+    "test": "jest --coverage",
     "lint": "eslint src --ext ts"
   },
   "dependencies": {
