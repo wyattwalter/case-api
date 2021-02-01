@@ -5,13 +5,14 @@ workflows:
   build-image:
     jobs:
       - build-image
+      - publish-image
+          requires:
+            - build-image
+          context:
+            - DockerHub
   node-tests:
     jobs:
       - test
-  publish-image:
-    jobs:
-      - publish-image:
-          context: GitHub Packages
 jobs:
   test:
     executor:
@@ -29,7 +30,7 @@ jobs:
           name: Run test suite
   build-image:
     environment:
-      IMAGE_NAME: docker.pkg.github.com/wyattwalter/case-api/case-api
+      IMAGE_NAME: wyattwalter/case-api
     docker:
       - image: circleci/buildpack-deps:stretch
     steps:
@@ -41,7 +42,7 @@ jobs:
           command: docker build -t $IMAGE_NAME:latest .
   publish-image:
     environment:
-      IMAGE_NAME: docker.pkg.github.com/wyattwalter/case-api/case-api
+      IMAGE_NAME: wyattwalter/case-api
     docker:
       - image: circleci/buildpack-deps:stretch
     steps:
@@ -49,5 +50,5 @@ jobs:
       - run:
           name: publish docker image
           command: |
-            echo "${GITHUB_TOKEN}" | docker login https://docker.pkg.github.com -u "${GITHUB_USERNAME}" --password-stdin
+            echo "${DOCKERHUB_TOKEN}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
             docker push $IMAGE_NAME:latest
