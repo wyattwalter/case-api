@@ -18,7 +18,7 @@ workflows:
             - DockerHub
 jobs:
   build-and-test:
-    executor: docker-publisher
+    executor: runner
     steps:
       - checkout
       - setup_remote_docker:
@@ -40,7 +40,7 @@ jobs:
           paths:
             - ./image.tar
   publish-image:
-    executor: docker-publisher
+    executor: runner
     steps:
       - attach_workspace:
           at: /tmp/workspace
