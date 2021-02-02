@@ -24,6 +24,8 @@ jobs:
       - setup_remote_docker:
           version: 19.03.13
       - run:
+          command: env
+      - run:
           name: build image
           command: docker build -t $IMAGE_NAME:latest .
       - run:
@@ -53,3 +55,4 @@ jobs:
           command: |
             echo "${DOCKER_TOKEN}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
             docker push $IMAGE_NAME:latest
+            docker logout
