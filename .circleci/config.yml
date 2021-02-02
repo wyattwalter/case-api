@@ -27,13 +27,13 @@ jobs:
           command: env
       - run:
           name: build image
-          command: docker build -t $IMAGE_NAME:latest .
+          command: docker build -t $IMAGE_NAME:$CIRCLE_SHA1 .
       - run:
           name: yarn lint
-          command: docker run --rm $IMAGE_NAME:latest lint
+          command: docker run --rm $IMAGE_NAME:$CIRCLE_SHA1 lint
       - run:
           name: yarn test
-          command: docker run --rm $IMAGE_NAME:latest test
+          command: docker run --rm $IMAGE_NAME:$CIRCLE_SHA1 test
       - run:
           name: archive the Docker image
           command: docker save -o image.tar $IMAGE_NAME
@@ -54,5 +54,14 @@ jobs:
           name: publish docker image
           command: |
             echo "${DOCKER_TOKEN}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
-            docker push $IMAGE_NAME:latest
+            docker push $IMAGE_NAME:$CIRCLE_SHA1
+            if [ $CIRCLE_BRANCH == "main" ]; then
+              docker tag $IMAGE_NAME:$CIRCLE_SHA1 $IMAGE_NAME:latest
+              docker push $IMAGE_NAME:latest
+            fi
+            if [ ! -z $CIRCLE_TAG ]; then
+              RELEASE_TAG=${CIRCLE_TAG/v/''}
+              docker tag $IMAGE_NAME:$CIRCLE_SHA1 $IMAGE_NAME:$RELEASE_TAG
+              docker push $IMAGE_NAME:$RELEASE_TAG
+            fi
             docker logout
