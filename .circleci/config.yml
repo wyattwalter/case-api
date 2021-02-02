@@ -1,22 +1,62 @@
 version: 2.1
+executors:
+  runner:
+    environment:
+      IMAGE_NAME: wyattwalter/case-api
+    docker:
+      - image: circleci/buildpack-deps:stretch
 orbs:
   node: circleci/node@3.0.0
 workflows:
-  node-tests:
+  build-and-test:
     jobs:
-      - test
+      - build-and-test
+      - publish-image:
+          requires:
+            - build-and-test
+          context:
+            - DockerHub
 jobs:
-  test:
-    executor:
-      name: node/default
-      tag: '13.14'
+  build-and-test:
+    executor: runner
     steps:
       - checkout
-      - node/install-packages:
-          pkg-manager: yarn
+      - setup_remote_docker:
+          version: 19.03.13
       - run:
-          command: yarn run lint
-          name: run eslint
+          command: env
       - run:
-          command: yarn run test
-          name: Run test suite
+          name: build image
+          command: docker build -t $IMAGE_NAME:$CIRCLE_SHA1 .
+      - run:
+          name: yarn lint
+          command: docker run --rm $IMAGE_NAME:$CIRCLE_SHA1 lint
+      - run:
+          name: yarn test
+          command: docker run --rm $IMAGE_NAME:$CIRCLE_SHA1 test
+      - run:
+          name: archive the Docker image
+          command: docker save -o image.tar $IMAGE_NAME
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./image.tar
+  publish-image:
+    executor: runner
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker
+      - run:
+          name: load archived Docker image
+          command: docker load -i /tmp/workspace/image.tar
+      - run:
+          name: publish docker image
+          command: |
+            echo "${DOCKER_TOKEN}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+            docker push $IMAGE_NAME:$CIRCLE_SHA1
+            if [ $CIRCLE_BRANCH == "main" ]; then
+              docker tag $IMAGE_NAME:$CIRCLE_SHA1 $IMAGE_NAME:latest
+              docker push $IMAGE_NAME:latest
+            fi
+            docker logout
