@@ -4,7 +4,7 @@ metadata:
   name: case-api
   description: A silly API no one should use.
   annotations:
-    argocd/app-name: case-api
+    argocd/app-name: kong
 spec:
   type: service
   lifecycle: production
