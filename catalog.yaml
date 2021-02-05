@@ -3,12 +3,11 @@ kind: Component
 metadata:
   name: case-api
   description: A silly API no one should use.
+  annotations:
+    argocd/app-name: case-api
 spec:
   type: service
   lifecycle: production
   owner: user:wyattwalter
   providesApis:
     - case-api
-metadata:
-  annotations:
-    argocd/app-name: case-api
