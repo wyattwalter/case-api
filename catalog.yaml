@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: case-api
+  description: A silly API no one should use.
+spec:
+  type: service
+  lifecycle: production
+  owner: user:wyattwalter
+  providesApis:
+    - case-api
+metadata:
+  annotations:
+    argocd/app-name: case-api
