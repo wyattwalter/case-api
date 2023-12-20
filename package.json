@@ -24,7 +24,7 @@
     "express-openapi-validator": "^4.10.9",
     "swagger-routes-express": "^3.3.0",
     "typescript": "^4.1.3",
-    "validator": "^13.5.2",
+    "validator": "^13.7.0",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
